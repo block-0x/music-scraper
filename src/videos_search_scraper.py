@@ -89,7 +89,7 @@ class YouTubeSearchScraper(object):
 
 
     def parse_search_videos(self):
-        self.turn_ids = []
+        self.orders = []
         self.titles = []
         self.video_urls = []
         self.views = []
@@ -112,7 +112,7 @@ class YouTubeSearchScraper(object):
         self.instagrams = []
         self.twitters = []
         self.blogs = []
-        turn_id = 0
+        order = 0
         soup = BeautifulSoup(self.current_html, 'html.parser')
         for i in soup.find_all("div", id = "dismissable"):
             '''
@@ -186,7 +186,7 @@ class YouTubeSearchScraper(object):
                 continue
             elif "," in channel_url:
                 continue
-            turn_id += 1
+            order += 1
             queriy_material = self.query_item
             queriy = queriy_material.replace('https://www.youtube.com/results?search_query=', '')
             scrape_at = self.scrape_at
@@ -204,7 +204,7 @@ class YouTubeSearchScraper(object):
             twitter = None
             blog = None
             if "/watch?v=" in video_url:
-                self.turn_ids.append(turn_id)
+                self.orders.append(order)
                 self.titles.append(title)
                 self.video_urls.append(video_url)
                 self.views.append(view)
@@ -231,7 +231,7 @@ class YouTubeSearchScraper(object):
 
     def search_data_save_as_csv_file(self):
         data = {
-         "turn_id": self.turn_ids,
+         "order": self.orders,
          "title": self.titles,
          "video_url": self.video_urls,
          "view": self.views,
@@ -258,7 +258,7 @@ class YouTubeSearchScraper(object):
                 pd.DataFrame(data).to_csv(self.search_csv_data_file_path, mode='a', header=False, index=False)
                 print(self.search_csv_data_file_path+"に追記")
             except ValueError:
-                print(len(self.turn_ids))
+                print(len(self.orders))
                 print(len(self.titles))
                 print(len(self.video_urls))
                 print(len(self.views))
